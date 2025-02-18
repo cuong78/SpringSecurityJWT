@@ -1,10 +1,10 @@
-package com.movieflix;
+package com.example.SecurityJWT;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MovieApiApplicationTests {
+class SecurityJwtApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -1,13 +1,13 @@
-package com.movieflix;
+package com.example.SecurityJWT;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MovieApiApplication {
+public class SecurityJwtApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MovieApiApplication.class, args);
+		SpringApplication.run(SecurityJwtApplication.class, args);
 	}
 
 }
