@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface AuthenticationRepo extends JpaRepository<Account, Long> {
     Account findById(long id);
-
     Optional <Account> findByUsername(String username);
+    Optional<Account> findByEmail(String email);
 
 }
 

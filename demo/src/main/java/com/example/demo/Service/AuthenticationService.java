@@ -1,11 +1,13 @@
 package com.example.demo.Service;
 
 import com.example.demo.entity.Account;
+import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.entity.request.AccountRequest;
 import com.example.demo.entity.request.AuthenticationRequest;
 import com.example.demo.entity.response.AuthenticationResponse;
 import com.example.demo.enums.RoleEnum;
 import com.example.demo.repository.AuthenticationRepo;
+import com.example.demo.repository.PasswordResetTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,13 +17,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
+
 @Service
 public class AuthenticationService implements UserDetailsService {
     @Autowired
     AuthenticationRepo authenticationRepo;
 
+
     @Autowired
-     PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -31,10 +37,13 @@ public class AuthenticationService implements UserDetailsService {
 
     public Account register(AccountRequest accountRequest) {
         // xử lí logic
-//        String currentPassword = account.getPassword();
-//        String newPassword = passwordEncoder.encode(currentPassword);
-//        account.setPassword(newPassword);
-        // lưu xuống database
+// String currentPassword = account.getPassword();
+// String newPassword = passwordEncoder.encode(currentPassword);
+// account.setPassword(newPassword);
+// lưu xuống database
+
+
+
 
         Account account = new Account();
 
@@ -79,4 +88,50 @@ public class AuthenticationService implements UserDetailsService {
 
         return authenticationResponse;
     }
+
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
+
+
+    private Date calculateExpiryDate(int expiryTimeInSeconds) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.SECOND, expiryTimeInSeconds);
+        return new Date(cal.getTime().getTime());
+    }
+
+    public Account validatePasswordResetToken(String token) {
+        PasswordResetToken passToken = passwordResetTokenRepository.findByToken(token);
+
+        if (passToken.getExpiryDate().before(new Date())) {
+            throw new IllegalArgumentException("Token expired");
+        }
+        return passToken.getAccount();
+    }
+
+    public void changePassword(Account account, String newPassword) {
+        account.setPassword(passwordEncoder.encode(newPassword));
+        authenticationRepo.save(account);
+    }
+
+    public void deleteResetToken(String token) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token);
+
+        passwordResetTokenRepository.delete(resetToken);
+    }
+
+
+    @Autowired
+    private EmailService emailService;
+
+    public void createPasswordResetTokenForAccount(Account account, String token) {
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setAccount(account);
+        resetToken.setExpiryDate(calculateExpiryDate(60 * 60)); // 1 giờ
+        passwordResetTokenRepository.save(resetToken);
+    }
+
+
 }
