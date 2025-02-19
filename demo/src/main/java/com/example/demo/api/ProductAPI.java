@@ -2,6 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.Service.ProductService;
 import com.example.demo.entity.Product;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 // đánh dấu
 @RestController
 @RequestMapping("/api/product")
+@SecurityRequirement(name = "api")
 public class ProductAPI {
 
     @Autowired

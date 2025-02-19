@@ -9,6 +9,7 @@ import com.example.demo.entity.request.ForgotPasswordRequest;
 import com.example.demo.entity.request.ResetPasswordRequest;
 import com.example.demo.entity.response.AuthenticationResponse;
 import com.example.demo.repository.AuthenticationRepo;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api")
+@SecurityRequirement(name = "api")
 public class AuthenticationAPI {
 
     @Autowired
